@@ -30,10 +30,8 @@ const LoginPage = () => {
               <Form.Control
                 onChange={formik.handleChange}
                 value={formik.values.username}
-                //placeholder="username"
                 name="username"
                 id="username"
-                //isInvalid={authFailed}
                 required
                 ref={inputRef}
               />
@@ -44,10 +42,8 @@ const LoginPage = () => {
                 type="password"
                 onChange={formik.handleChange}
                 value={formik.values.password}
-                //placeholder="password"
                 name="password"
                 id="password"
-                //isInvalid={authFailed}
                 required
               />
               <Form.Control.Feedback type="invalid">не правильный логин или пароль</Form.Control.Feedback>
