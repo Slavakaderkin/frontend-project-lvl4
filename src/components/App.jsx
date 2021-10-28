@@ -55,7 +55,7 @@ const LogOutButton = () => {
 const App = () => (
   <AuthProvider>
     <Router>
-      <Navbar bg="light" expand="lg">
+      <Navbar bg="white" className="shadow-sm justify-content-between">
         <Navbar.Brand as={Link} to="/">Hexlet Chat</Navbar.Brand>
         <LogOutButton />
       </Navbar>
@@ -64,7 +64,7 @@ const App = () => (
         <PrivateRoute exact path="/">
           <MainPage />
         </PrivateRoute>
-        <Route path="/login">
+        <Route exact path="/login">
           <LoginPage />
         </Route>
         <Route path="*">
