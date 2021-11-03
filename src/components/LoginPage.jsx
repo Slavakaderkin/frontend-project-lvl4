@@ -7,6 +7,17 @@ import {
 } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { useFormik } from 'formik';
+import * as Yup from 'yup';
+
+const loginSchema = Yup.object().shape({
+  username: Yup.string()
+    .min(2, 'Короткое имя')
+    .max(20, 'Длинное имя')
+    .required('Имя обязательно'),
+  password: Yup.string()
+    .min(4, 'Короткий пароль')
+    .required('Пароль обязателен'),
+});
 
 const LoginPage = () => {
   const inputRef = useRef();
@@ -14,6 +25,10 @@ const LoginPage = () => {
     initialValues: {
       username: '',
       password: '',
+    },
+    validationSchema: loginSchema,
+    onSubmit: (values) => {
+      console.log(values);
     },
   });
 
@@ -34,7 +49,10 @@ const LoginPage = () => {
                 id="username"
                 required
                 ref={inputRef}
+                isInvalid={formik.touched.username && formik.errors.username}
+                isValid={formik.touched.username && !formik.errors.username}
               />
+              <Form.Control.Feedback type="invalid">{formik.errors.username}</Form.Control.Feedback>
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label htmlFor="password">Пароль</Form.Label>
@@ -45,8 +63,10 @@ const LoginPage = () => {
                 name="password"
                 id="password"
                 required
+                isInvalid={formik.touched.password && formik.errors.password}
+                isValid={formik.touched.password && !formik.errors.password}
               />
-              <Form.Control.Feedback type="invalid">не правильный логин или пароль</Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid">{formik.errors.password}</Form.Control.Feedback>
             </Form.Group>
             <Button type="submit" variant="primary" className="mt-2">Войти</Button>
           </Form>
