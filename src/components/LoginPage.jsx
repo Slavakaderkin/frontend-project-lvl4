@@ -1,13 +1,17 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import {
   Form,
   Card,
   Container,
   Button,
 } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import axios from 'axios';
+
+import useAuth from '../hooks/index.jsx';
+import routes from '../routes.js';
 
 const loginSchema = Yup.object().shape({
   username: Yup.string()
@@ -20,15 +24,27 @@ const loginSchema = Yup.object().shape({
 });
 
 const LoginPage = () => {
+  const [authFailed, setAuthFailed] = useState(false);
+  const history = useHistory();
+  const auth = useAuth();
   const inputRef = useRef();
+  const feedback = useRef();
   const formik = useFormik({
     initialValues: {
       username: '',
       password: '',
     },
     validationSchema: loginSchema,
-    onSubmit: (values) => {
-      console.log(values);
+    onSubmit: async (values) => {
+      try {
+        const { data: { token } } = await axios.post(routes.loginPath(), values);
+        auth.logIn(token);
+        history.push('/');
+      } catch (e) {
+        setAuthFailed(true);
+        inputRef.current.select();
+        feedback.current.innerHTML = `${e.message}`;
+      }
     },
   });
 
@@ -49,7 +65,7 @@ const LoginPage = () => {
                 id="username"
                 required
                 ref={inputRef}
-                isInvalid={formik.touched.username && formik.errors.username}
+                isInvalid={authFailed || (formik.touched.username && formik.errors.username)}
                 isValid={formik.touched.username && !formik.errors.username}
               />
               <Form.Control.Feedback type="invalid">{formik.errors.username}</Form.Control.Feedback>
@@ -63,13 +79,14 @@ const LoginPage = () => {
                 name="password"
                 id="password"
                 required
-                isInvalid={formik.touched.password && formik.errors.password}
+                isInvalid={authFailed || (formik.touched.password && formik.errors.password)}
                 isValid={formik.touched.password && !formik.errors.password}
               />
               <Form.Control.Feedback type="invalid">{formik.errors.password}</Form.Control.Feedback>
             </Form.Group>
-            <Button type="submit" variant="primary" className="mt-2">Войти</Button>
+            <Button type="submit" variant="primary" className="mt-2" disabled={formik.isSubmitting}>Войти</Button>
           </Form>
+          <Card.Text ref={feedback} className="text-danger" />
         </Card.Body>
         <Card.Footer className="text-center">
           <Card.Link as={Link} to="/signup">Зарегистрироваться</Card.Link>

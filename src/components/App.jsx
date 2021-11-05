@@ -18,11 +18,16 @@ import authContext from '../contexts/index.jsx';
 
 const AuthProvider = ({ children }) => {
   const [loggedIn, setLoggedIn] = useState(false);
+  console.log(loggedIn);
 
-  const logIn = () => setLoggedIn(true);
+  const logIn = (token) => {
+    setLoggedIn(true);
+    localStorage.setItem('userId', token);
+  };
+
   const logOut = () => {
-    localStorage.removeItem('userId');
     setLoggedIn(false);
+    localStorage.removeItem('userId');
   };
 
   return (
@@ -52,27 +57,30 @@ const LogOutButton = () => {
   );
 };
 
-const App = () => (
-  <AuthProvider>
-    <Router>
-      <Navbar bg="white" className="shadow-sm justify-content-between">
-        <Navbar.Brand as={Link} to="/">Hexlet Chat</Navbar.Brand>
-        <LogOutButton />
-      </Navbar>
+const App = () => {
+  const auth = useAuth();
+  return (
+    <AuthProvider>
+      <Router>
+        <Navbar bg="white" className="shadow-sm justify-content-between">
+          <Navbar.Brand as={Link} to="/">Hexlet Chat</Navbar.Brand>
+          <LogOutButton />
+        </Navbar>
 
-      <Switch>
-        <PrivateRoute exact path="/">
-          <MainPage />
-        </PrivateRoute>
-        <Route exact path="/login">
-          <LoginPage />
-        </Route>
-        <Route path="*">
-          <NotFoundPage />
-        </Route>
-      </Switch>
-    </Router>
-  </AuthProvider>
-);
+        <Switch>
+          <PrivateRoute exact path="/">
+            <MainPage />
+          </PrivateRoute>
+          <Route exact path="/login">
+            {auth.loggedIn ? <Redirect to="/" /> : <LoginPage />}
+          </Route>
+          <Route path="*">
+            <NotFoundPage />
+          </Route>
+        </Switch>
+      </Router>
+    </AuthProvider>
+  );
+};
 
 export default App;
