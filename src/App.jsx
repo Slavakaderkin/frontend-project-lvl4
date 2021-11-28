@@ -6,28 +6,30 @@ import {
   Link,
   Redirect,
 } from 'react-router-dom';
-
+import { Provider } from 'react-redux';
 import { Button, Navbar } from 'react-bootstrap';
 
-import LoginPage from './LoginPage.jsx';
-import MainPage from './MainPage.jsx';
-import NotFoundPage from './NotFoundPage.jsx';
+import LoginPage from './pages/LoginPage.jsx';
+import MainPage from './pages/MainPage.jsx';
+import NotFoundPage from './pages/NotFoundPage.jsx';
 
-import useAuth from '../hooks/index.jsx';
-import authContext from '../contexts/index.jsx';
+import useAuth from './hooks/index.jsx';
+import authContext from './contexts/index.jsx';
+
+import store from './store';
 
 const AuthProvider = ({ children }) => {
   const [loggedIn, setLoggedIn] = useState(false);
   console.log(loggedIn);
 
-  const logIn = (token) => {
+  const logIn = (data) => {
+    localStorage.setItem('userId', JSON.stringify(data));
     setLoggedIn(true);
-    localStorage.setItem('userId', token);
   };
 
   const logOut = () => {
-    setLoggedIn(false);
     localStorage.removeItem('userId');
+    setLoggedIn(false);
   };
 
   return (
@@ -57,12 +59,11 @@ const LogOutButton = () => {
   );
 };
 
-const App = () => {
-  const auth = useAuth();
-  return (
+const App = () => (
+  <Provider store={store}>
     <AuthProvider>
       <Router>
-        <Navbar bg="white" className="shadow-sm justify-content-between">
+        <Navbar bg="white" className="border-bottom justify-content-between">
           <Navbar.Brand as={Link} to="/">Hexlet Chat</Navbar.Brand>
           <LogOutButton />
         </Navbar>
@@ -72,7 +73,7 @@ const App = () => {
             <MainPage />
           </PrivateRoute>
           <Route exact path="/login">
-            {auth.loggedIn ? <Redirect to="/" /> : <LoginPage />}
+            <LoginPage />
           </Route>
           <Route path="*">
             <NotFoundPage />
@@ -80,7 +81,7 @@ const App = () => {
         </Switch>
       </Router>
     </AuthProvider>
-  );
-};
+  </Provider>
+);
 
 export default App;

@@ -37,8 +37,8 @@ const LoginPage = () => {
     validationSchema: loginSchema,
     onSubmit: async (values) => {
       try {
-        const { data: { token } } = await axios.post(routes.loginPath(), values);
-        auth.logIn(token);
+        const { data } = await axios.post(routes.loginPath(), values);
+        auth.logIn(data);
         history.push('/');
       } catch (e) {
         setAuthFailed(true);
