@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   BrowserRouter as Router,
   Switch,
@@ -8,36 +8,14 @@ import {
 } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { Button, Navbar } from 'react-bootstrap';
-
+import AuthProvider from './components/AuthProvider.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import MainPage from './pages/MainPage.jsx';
 import NotFoundPage from './pages/NotFoundPage.jsx';
 
-import useAuth from './hooks/index.jsx';
-import authContext from './contexts/index.jsx';
+import useAuth from './hooks/auth.jsx';
 
 import store from './store';
-
-const AuthProvider = ({ children }) => {
-  const [loggedIn, setLoggedIn] = useState(false);
-  console.log(loggedIn);
-
-  const logIn = (data) => {
-    localStorage.setItem('userId', JSON.stringify(data));
-    setLoggedIn(true);
-  };
-
-  const logOut = () => {
-    localStorage.removeItem('userId');
-    setLoggedIn(false);
-  };
-
-  return (
-    <authContext.Provider value={{ loggedIn, logIn, logOut }}>
-      {children}
-    </authContext.Provider>
-  );
-};
 
 const PrivateRoute = ({ children, path }) => {
   const auth = useAuth();

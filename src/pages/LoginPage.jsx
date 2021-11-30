@@ -10,7 +10,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
 
-import useAuth from '../hooks/index.jsx';
+import useAuth from '../hooks/auth.jsx';
 import routes from '../routes.js';
 
 const loginSchema = Yup.object().shape({
