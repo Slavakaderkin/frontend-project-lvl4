@@ -9,6 +9,7 @@ import {
 import { Provider } from 'react-redux';
 import { Button, Navbar } from 'react-bootstrap';
 import AuthProvider from './components/AuthProvider.jsx';
+import SocketProvider from './components/SocketProvider.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import MainPage from './pages/MainPage.jsx';
 import NotFoundPage from './pages/NotFoundPage.jsx';
@@ -40,24 +41,26 @@ const LogOutButton = () => {
 const App = () => (
   <Provider store={store}>
     <AuthProvider>
-      <Router>
-        <Navbar bg="white" className="border-bottom justify-content-between">
-          <Navbar.Brand as={Link} to="/">Hexlet Chat</Navbar.Brand>
-          <LogOutButton />
-        </Navbar>
+      <SocketProvider>
+        <Router>
+          <Navbar bg="white" className="border-bottom justify-content-between">
+            <Navbar.Brand as={Link} to="/">Hexlet Chat</Navbar.Brand>
+            <LogOutButton />
+          </Navbar>
 
-        <Switch>
-          <PrivateRoute exact path="/">
-            <MainPage />
-          </PrivateRoute>
-          <Route exact path="/login">
-            <LoginPage />
-          </Route>
-          <Route path="*">
-            <NotFoundPage />
-          </Route>
-        </Switch>
-      </Router>
+          <Switch>
+            <PrivateRoute exact path="/">
+              <MainPage />
+            </PrivateRoute>
+            <Route exact path="/login">
+              <LoginPage />
+            </Route>
+            <Route path="*">
+              <NotFoundPage />
+            </Route>
+          </Switch>
+        </Router>
+      </SocketProvider>
     </AuthProvider>
   </Provider>
 );
