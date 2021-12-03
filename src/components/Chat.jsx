@@ -49,7 +49,7 @@ const Chat = () => {
   const input = useRef();
 
   useEffect(() => {
-    input.current.select();
+    input.current.focus();
   }, [currentChannelId]);
 
   return (
