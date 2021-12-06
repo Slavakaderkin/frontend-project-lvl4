@@ -35,6 +35,8 @@ const LoginPage = () => {
       password: '',
     },
     validationSchema: loginSchema,
+    validateOnBlur: false,
+    validateOnChange: false,
     onSubmit: async (values) => {
       try {
         const { data } = await axios.post(routes.loginPath(), values);
