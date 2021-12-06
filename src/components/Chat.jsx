@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import { Form, Button, InputGroup } from 'react-bootstrap';
+import * as Yup from 'yup';
 
 import useAuth from '../hooks/auth.jsx';
 import useSocket from '../hooks/socket.jsx';
@@ -18,7 +19,7 @@ const Chat = () => {
   });
 
   const renderMessages = () => (
-    <div className="mt-3 ml-3 mr-4">
+    <div className="mt-3 ml-3 mr-4 overflow-auto">
       {currentChannelMessages.map((msg) => (
         <p key={msg.id}>
           <span className="font-weight-bold">{`${msg.author}: `}</span>
@@ -32,6 +33,13 @@ const Chat = () => {
     initialValues: {
       text: '',
     },
+    validationSchema: Yup.object({
+      text: Yup
+        .string('Сообщение должно быть строкой')
+        .required('Сообщение не должно быть пустым'),
+    }),
+    validateOnBlur: false,
+    validateOnChange: false,
     onSubmit: async (values) => {
       const msg = {
         ...values,
@@ -65,10 +73,12 @@ const Chat = () => {
             aria-describedby="basic-addon2"
             value={formik.values.text}
             onChange={formik.handleChange}
+            isInvalid={formik.errors.text}
           />
           <Button variant="outline-primary" id="button-addon2">
             Отправить
           </Button>
+          <Form.Control.Feedback type="invalid">{formik.errors.text}</Form.Control.Feedback>
         </InputGroup>
       </Form>
     </main>
