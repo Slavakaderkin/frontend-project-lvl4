@@ -23,7 +23,7 @@ const PrivateRoute = ({ children, path }) => {
 
   return (
     <Route path={path}>
-      {auth.loggedIn ? children : <Redirect to="/login" />}
+      {auth.user ? children : <Redirect to="/login" />}
     </Route>
   );
 };
@@ -32,7 +32,7 @@ const LogOutButton = () => {
   const auth = useAuth();
 
   return (
-    auth.loggedIn
+    auth.user
       ? <Button onClick={auth.logOut}>Выйти</Button>
       : null
   );
@@ -49,12 +49,12 @@ const App = () => (
           </Navbar>
 
           <Switch>
-            <PrivateRoute exact path="/">
-              <MainPage />
-            </PrivateRoute>
             <Route exact path="/login">
               <LoginPage />
             </Route>
+            <PrivateRoute exact path="/">
+              <MainPage />
+            </PrivateRoute>
             <Route path="*">
               <NotFoundPage />
             </Route>

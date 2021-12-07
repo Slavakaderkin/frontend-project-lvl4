@@ -44,7 +44,7 @@ const Chat = () => {
       const msg = {
         ...values,
         channelId: currentChannelId,
-        author: auth.username,
+        author: auth.user.usernname,
         createAt: Date.now(),
       };
 
