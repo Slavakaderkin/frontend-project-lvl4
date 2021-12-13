@@ -5,16 +5,15 @@ import 'regenerator-runtime/runtime.js';
 
 import '../assets/application.scss';
 
-import React from 'react';
 import ReactDOM from 'react-dom';
 
-import App from './App.jsx';
+import initApp from './init.jsx';
 
 if (process.env.NODE_ENV !== 'production') {
   localStorage.debug = 'chat:*';
 }
 
 const container = document.querySelector('#chat');
-ReactDOM.render(<App />, container);
+ReactDOM.render(initApp(), container);
 
 console.log('it works!');
