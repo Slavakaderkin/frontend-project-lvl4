@@ -9,6 +9,7 @@ import {
   Button,
 } from 'react-bootstrap';
 import * as Yup from 'yup';
+import { useTranslation } from 'react-i18next';
 
 import { hideModal } from '../../store/slices/modalSlice.js';
 import useSocket from '../../hooks/socket.jsx';
@@ -16,6 +17,7 @@ import useSocket from '../../hooks/socket.jsx';
 const AddChannel = () => {
   const socket = useSocket();
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
   const handleClose = () => dispatch(hideModal());
 
@@ -31,11 +33,11 @@ const AddChannel = () => {
     },
     validationSchema: Yup.object({
       name: Yup
-        .string('Имя канала должно быть строкой')
-        .required('Имя канала не должно быть пустым')
-        .min(2, 'Имя канала не должно быть меньше двух символов')
-        .max(20, 'Имя канала не должно быть больше двадцати символов')
-        .notOneOf(channelsNames, 'Имя канала должно быть уникальным'),
+        .string(t('errors.string'))
+        .required(t('errors.empty'))
+        .min(2, t('errors.channelTitleLength'))
+        .max(20, t('errors.channelTitleLength'))
+        .notOneOf(channelsNames, t('errors.channelTitleUniq')),
     }),
     validateOnBlur: false,
     validateOnChange: false,
@@ -56,7 +58,7 @@ const AddChannel = () => {
   return (
     <Modal show={isOpened} onHide={handleClose} centered>
       <Modal.Header closeButton>
-        <Modal.Title>Добавить канал</Modal.Title>
+        <Modal.Title>{t('modal.add')}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={formik.handleSubmit}>
@@ -72,8 +74,8 @@ const AddChannel = () => {
             />
             <Form.Control.Feedback type="invalid">{formik.errors.name}</Form.Control.Feedback>
           </FormGroup>
-          <Button className="mt-4 mr-2" type="submit" variant="primary" disabled={formik.isSubmitting}>Добавить</Button>
-          <Button className="mt-4" variant="secondary" onClick={handleClose}>Закрыть</Button>
+          <Button className="mt-4 mr-2" type="submit" variant="primary" disabled={formik.isSubmitting}>{t('modal.addButton')}</Button>
+          <Button className="mt-4" variant="secondary" onClick={handleClose}>{t('modal.closeButton')}</Button>
         </Form>
       </Modal.Body>
     </Modal>

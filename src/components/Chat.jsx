@@ -3,12 +3,14 @@ import { useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import { Form, Button, InputGroup } from 'react-bootstrap';
 import * as Yup from 'yup';
+import { useTranslation } from 'react-i18next';
 
 import useAuth from '../hooks/auth.jsx';
 import useSocket from '../hooks/socket.jsx';
 
 const Chat = () => {
   const auth = useAuth();
+  const { t } = useTranslation();
   const socket = useSocket();
 
   const currentChannelId = useSelector((state) => state.channels.currentChannelId);
@@ -35,8 +37,8 @@ const Chat = () => {
     },
     validationSchema: Yup.object({
       text: Yup
-        .string('Сообщение должно быть строкой')
-        .required('Сообщение не должно быть пустым'),
+        .string(t('errors.string'))
+        .required(t('errors.empty')),
     }),
     validateOnBlur: false,
     validateOnChange: false,
@@ -44,7 +46,7 @@ const Chat = () => {
       const msg = {
         ...values,
         channelId: currentChannelId,
-        author: auth.user.usernname,
+        author: auth.user.username,
         createAt: Date.now(),
       };
 
@@ -66,7 +68,7 @@ const Chat = () => {
       <Form className="m-3" onSubmit={formik.handleSubmit}>
         <InputGroup>
           <Form.Control
-            placeholder="Сообщение..."
+            placeholder={t('chat.placeholder')}
             name="text"
             ref={input}
             aria-label="message"
@@ -76,7 +78,7 @@ const Chat = () => {
             isInvalid={formik.errors.text}
           />
           <Button variant="outline-primary" id="button-addon2">
-            Отправить
+            {t('chat.sendButton')}
           </Button>
           <Form.Control.Feedback type="invalid">{formik.errors.text}</Form.Control.Feedback>
         </InputGroup>

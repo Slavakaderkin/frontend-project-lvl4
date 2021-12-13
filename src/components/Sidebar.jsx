@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { Button, Dropdown, ButtonGroup } from 'react-bootstrap';
 import cn from 'classnames';
 
@@ -7,6 +8,7 @@ import { setCurrentChannelId } from '../store/slices/channelsSlice.js';
 import { showModal } from '../store/slices/modalSlice.js';
 
 const Sidebar = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
 
   const channels = useSelector((state) => {
@@ -60,8 +62,8 @@ const Sidebar = () => {
         <Dropdown.Toggle split className={toggleClasses} id="dropdown-split-basic" />
 
         <Dropdown.Menu>
-          <Dropdown.Item href="#/action-1" onClick={handleRemoveChannel(channel)}>Удалить</Dropdown.Item>
-          <Dropdown.Item href="#/action-2" onClick={handleRenameChannel(channel)}>Переименовать</Dropdown.Item>
+          <Dropdown.Item href="#/action-1" onClick={handleRemoveChannel(channel)}>{t('sidebar.removeButton')}</Dropdown.Item>
+          <Dropdown.Item href="#/action-2" onClick={handleRenameChannel(channel)}>{t('sidebar.renameButton')}</Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
     );
@@ -70,7 +72,7 @@ const Sidebar = () => {
   return (
     <section className="p-4 col-2 overflow-auto border-right bg-white">
       <div className="d-flex justify-content-between pb-3 border-bottom mb-4 align-items-end">
-        <h5 className="ml-1  align-items-end">Каналы</h5>
+        <h5 className="ml-1  align-items-end">{t('sidebar.title')}</h5>
         <Button variant="outline-dark" size="sm" onClick={handleAddChannel()}>+</Button>
       </div>
       <ul className="list-group">
