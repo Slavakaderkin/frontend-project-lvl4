@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import Sidebar from '../components/Sidebar.jsx';
 import Chat from '../components/Chat.jsx';
 import getModal from '../components/modals/index.js';
+
 import { fetchData } from '../services/index.js';
 
 const renderModal = (modal) => {
@@ -17,11 +18,11 @@ const renderModal = (modal) => {
 
 const MainPage = () => {
   const dispatch = useDispatch();
-  const modal = useSelector((state) => state.modal);
-
   useEffect(() => {
     dispatch(fetchData());
   }, []);
+
+  const modal = useSelector((state) => state.modal);
 
   return (
     <div className="row h-100">

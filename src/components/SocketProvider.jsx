@@ -4,7 +4,12 @@ import { useDispatch } from 'react-redux';
 
 import socketContext from '../contexts/socketContext.jsx';
 import { addMessage } from '../store/slices/messagesSlice.js';
-import { addChannel, setCurrentChannelId } from '../store/slices/channelsSlice.js';
+import {
+  addChannel,
+  setCurrentChannelId,
+  changeName,
+  removeChannel,
+} from '../store/slices/channelsSlice.js';
 
 const SocketProvider = ({ children }) => {
   const socket = io();
@@ -19,6 +24,14 @@ const SocketProvider = ({ children }) => {
     dispatch(setCurrentChannelId(channel.id));
   });
 
+  socket.on('renameChannel', (channel) => {
+    dispatch(changeName({ channel }));
+  });
+
+  socket.on('removeChannel', ({ id }) => {
+    dispatch(removeChannel({ id }));
+  });
+
   const sendMessage = (msg) => {
     socket.emit('newMessage', msg, (response) => {
       console.log(response.status);
@@ -31,8 +44,26 @@ const SocketProvider = ({ children }) => {
     });
   };
 
+  const renameChannel = (channel) => {
+    socket.emit('renameChannel', channel, (response) => {
+      console.log(response.status);
+    });
+  };
+
+  const deleteChannel = (channel) => {
+    socket.emit('removeChannel', channel, (response) => {
+      console.log(response.status);
+    });
+  };
+
   return (
-    <socketContext.Provider value={{ sendMessage, createChannel }}>
+    <socketContext.Provider value={{
+      sendMessage,
+      createChannel,
+      renameChannel,
+      deleteChannel,
+    }}
+    >
       {children}
     </socketContext.Provider>
   );

@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import * as _ from 'lodash';
 
 import { fetchData } from '../../services/index.js';
+import { removeChannel } from './channelsSlice.js';
 
 const messagesSlice = createSlice({
   name: 'messages',
@@ -18,11 +19,22 @@ const messagesSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchData.fulfilled, (state, action) => {
-      const { messages } = action.payload;
-      state.byId = _.keyBy(messages, 'id');
-      state.allIds = messages.map(({ id }) => id);
-    });
+    builder
+      .addCase(fetchData.fulfilled, (state, action) => {
+        const { messages } = action.payload;
+        state.byId = _.keyBy(messages, 'id');
+        state.allIds = messages.map(({ id }) => id);
+      })
+      .addCase(removeChannel, (state, action) => {
+        const { id: channelId } = action.payload;
+        const messagesIds = state.allIds.map((id) => state.byId[id])
+          .filter((msg) => msg.channelId === channelId)
+          .map(({ id }) => id);
+        state = {
+          byId: _.omit(state.byId, messagesIds),
+          allIds: _.remove(state.allIds, (id) => messagesIds.includes(id)),
+        };
+      });
   },
 });
 
