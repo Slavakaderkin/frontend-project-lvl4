@@ -15,8 +15,6 @@ const getUser = () => {
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(getUser());
 
-  console.log(user.username);
-
   const logIn = (data) => {
     setUser(data);
     localStorage.setItem('userId', JSON.stringify(data));
