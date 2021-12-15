@@ -10,6 +10,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 
 import useAuth from '../hooks/auth.jsx';
 import routes from '../routes.js';
@@ -20,7 +21,7 @@ const LoginPage = () => {
   const auth = useAuth();
   const { t } = useTranslation();
   const inputRef = useRef();
-  const feedback = useRef();
+
   const formik = useFormik({
     initialValues: {
       username: '',
@@ -45,7 +46,7 @@ const LoginPage = () => {
         if (e.response.status === 401) {
           setAuthFailed(true);
           inputRef.current.select();
-          feedback.current.innerHTML = t('errors.auth');
+          toast.error(t('errors.auth'));
         }
         throw e;
       }
@@ -92,7 +93,6 @@ const LoginPage = () => {
             </Form.Group>
             <Button type="submit" variant="primary" className="mt-2" disabled={formik.isSubmitting}>{t('login.sendButton')}</Button>
           </Form>
-          <Card.Text ref={feedback} className="text-danger" />
         </Card.Body>
         <Card.Footer className="text-center">
           <Card.Link as={Link} to="/signup">{t('login.signUpLink')}</Card.Link>

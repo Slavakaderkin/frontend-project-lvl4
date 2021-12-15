@@ -10,6 +10,7 @@ import {
 } from 'react-bootstrap';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 
 import { hideModal } from '../../store/slices/modalSlice.js';
 import useSocket from '../../hooks/socket.jsx';
@@ -44,10 +45,16 @@ const RenameChannel = () => {
     validateOnBlur: false,
     validateOnChange: false,
     onSubmit: async (values) => {
-      const channel = { ...currentChannel, ...values };
-      await socket.renameChannel(channel);
-      formik.resetForm();
-      handleClose();
+      try {
+        const channel = { ...currentChannel, ...values };
+        await socket.renameChannel(channel);
+        formik.resetForm();
+        handleClose();
+        toast.success(t('modal.successRenamed'));
+      } catch (err) {
+        toast.error(err.message);
+        throw err;
+      }
     },
   });
 

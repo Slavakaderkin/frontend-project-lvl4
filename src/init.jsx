@@ -2,6 +2,7 @@ import React from 'react';
 
 import i18n from 'i18next';
 import { initReactI18next, I18nextProvider } from 'react-i18next';
+import { injectStyle } from 'react-toastify/dist/inject-style';
 
 import { Provider } from 'react-redux';
 import AuthProvider from './components/AuthProvider.jsx';
@@ -24,6 +25,8 @@ const init = () => {
         escapeValue: false,
       },
     });
+
+  injectStyle();
 
   return (
     <Provider store={store}>

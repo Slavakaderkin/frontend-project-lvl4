@@ -5,6 +5,7 @@ import {
   Button,
 } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 
 import { hideModal } from '../../store/slices/modalSlice.js';
 import useSocket from '../../hooks/socket.jsx';
@@ -22,11 +23,16 @@ const RemoveChannel = () => {
   const isOpened = useSelector((state) => state.modal.type !== null);
 
   const handleRemove = (c) => async (e) => {
-    e.preventDefault();
-    setRemoving(true);
-    await socket.deleteChannel(c);
-    setRemoving(false);
-    handleClose();
+    try {
+      e.preventDefault();
+      setRemoving(true);
+      await socket.deleteChannel(c);
+      setRemoving(false);
+      handleClose();
+      toast.success(t('modal.successRemoved'));
+    } catch (err) {
+      toast.error(err.message);
+    }
   };
 
   return (
