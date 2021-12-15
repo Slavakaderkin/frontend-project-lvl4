@@ -4,6 +4,7 @@ import { useFormik } from 'formik';
 import { Form, Button, InputGroup } from 'react-bootstrap';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
+import filter from 'leo-profanity';
 
 import useAuth from '../hooks/auth.jsx';
 import useSocket from '../hooks/socket.jsx';
@@ -12,6 +13,7 @@ const Chat = () => {
   const auth = useAuth();
   const { t } = useTranslation();
   const socket = useSocket();
+  filter.loadDictionary('ru');
 
   const currentChannelId = useSelector((state) => state.channels.currentChannelId);
   const currentChannelMessages = useSelector((state) => {
@@ -25,7 +27,7 @@ const Chat = () => {
       {currentChannelMessages.map((msg) => (
         <p key={msg.id}>
           <span className="font-weight-bold">{`${msg.author}: `}</span>
-          {msg.text}
+          {filter.clean(msg.text, '*')}
         </p>
       ))}
     </div>
