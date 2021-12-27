@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Button, Dropdown, ButtonGroup } from 'react-bootstrap';
@@ -7,9 +7,13 @@ import cn from 'classnames';
 import { setCurrentChannelId } from '../store/slices/channelsSlice.js';
 import { showModal } from '../store/slices/modalSlice.js';
 
+import Loading from './skeletons/Sidebar.jsx';
+
 const Sidebar = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+
+  const loading = useSelector((state) => state.channels.loading !== 'fulfilled');
 
   const channels = useSelector((state) => {
     const { allIds, byId } = state.channels;
@@ -69,17 +73,21 @@ const Sidebar = () => {
     );
   };
 
-  return (
-    <section className="p-4 col-2 overflow-auto border-right bg-white">
-      <div className="d-flex justify-content-between pb-3 border-bottom mb-4 align-items-end">
-        <h5 className="ml-1  align-items-end">{t('sidebar.title')}</h5>
-        <Button variant="outline-dark" size="sm" onClick={handleAddChannel()}>+</Button>
-      </div>
-      <ul className="list-group">
-        {channels.map(renderChannelButton)}
-      </ul>
-    </section>
-  );
+  useEffect(() => {}, []);
+
+  return loading
+    ? <Loading />
+    : (
+      <section className="p-4 col-2 overflow-auto border-right bg-white">
+        <div className="d-flex justify-content-between pb-3 border-bottom mb-4 align-items-end">
+          <h5 className="ml-1  align-items-end">{t('sidebar.title')}</h5>
+          <Button variant="outline-dark" size="sm" onClick={handleAddChannel()}>+</Button>
+        </div>
+        <ul className="list-group">
+          {channels.map(renderChannelButton)}
+        </ul>
+      </section>
+    );
 };
 
 export default Sidebar;

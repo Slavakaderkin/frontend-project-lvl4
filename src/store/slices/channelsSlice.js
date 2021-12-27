@@ -11,6 +11,7 @@ const channelsSlice = createSlice({
     byId: {},
     allIds: [],
     currentChannelId: null,
+    loading: 'idle',
   },
   reducers: {
     setCurrentChannelId(state, action) {
@@ -62,8 +63,13 @@ const channelsSlice = createSlice({
         byId,
         allIds,
         currentChannelId,
+        loading: 'fulfilled',
       };
-    });
+    })
+      .addCase(fetchData.pending, (state) => ({
+        ...state,
+        loading: 'pending',
+      }));
   },
 });
 
