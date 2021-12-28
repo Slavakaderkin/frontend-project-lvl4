@@ -10,6 +10,7 @@ const messagesSlice = createSlice({
   initialState: {
     byId: {},
     allIds: [],
+    loading: 'idle',
   },
   reducers: {
     addMessage(state, action) {
@@ -24,6 +25,10 @@ const messagesSlice = createSlice({
         const { messages } = action.payload;
         state.byId = _.keyBy(messages, 'id');
         state.allIds = messages.map(({ id }) => id);
+        state.loading = 'fulfilled';
+      })
+      .addCase(fetchData.pending, (state) => {
+        state.loading = 'pending';
       })
       .addCase(removeChannel, (state, action) => {
         const { id: channelId } = action.payload;

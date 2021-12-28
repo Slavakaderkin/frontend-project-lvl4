@@ -9,11 +9,15 @@ import filter from 'leo-profanity';
 import useAuth from '../hooks/auth.jsx';
 import useSocket from '../hooks/socket.jsx';
 
+import Loading from './skeletons/Chat.jsx';
+
 const Chat = () => {
   const auth = useAuth();
   const { t } = useTranslation();
   const socket = useSocket();
   filter.loadDictionary('ru');
+
+  const loading = useSelector((state) => state.messages.loading !== 'fulfilled');
 
   const currentChannelId = useSelector((state) => state.channels.currentChannelId);
   const currentChannelMessages = useSelector((state) => {
@@ -61,32 +65,34 @@ const Chat = () => {
   const input = useRef();
 
   useEffect(() => {
-    input.current.focus();
+    if (!loading) input.current.focus();
   }, [currentChannelId]);
 
-  return (
-    <main className="col-10 d-flex flex-column flex-fill justify-content-end">
-      {renderMessages()}
-      <Form className="m-3" onSubmit={formik.handleSubmit}>
-        <InputGroup>
-          <Form.Control
-            placeholder={t('chat.placeholder')}
-            name="text"
-            ref={input}
-            aria-label="message"
-            aria-describedby="basic-addon2"
-            value={formik.values.text}
-            onChange={formik.handleChange}
-            isInvalid={formik.errors.text}
-          />
-          <Button variant="outline-primary" id="button-addon2">
-            {t('chat.sendButton')}
-          </Button>
-          <Form.Control.Feedback type="invalid">{formik.errors.text}</Form.Control.Feedback>
-        </InputGroup>
-      </Form>
-    </main>
-  );
+  return loading
+    ? <Loading />
+    : (
+      <main className="col-10 d-flex flex-column flex-fill justify-content-end">
+        {renderMessages()}
+        <Form className="m-3" onSubmit={formik.handleSubmit}>
+          <InputGroup>
+            <Form.Control
+              placeholder={t('chat.placeholder')}
+              name="text"
+              ref={input}
+              aria-label="message"
+              aria-describedby="basic-addon2"
+              value={formik.values.text}
+              onChange={formik.handleChange}
+              isInvalid={formik.errors.text}
+            />
+            <Button variant="outline-primary" id="button-addon2">
+              {t('chat.sendButton')}
+            </Button>
+            <Form.Control.Feedback type="invalid">{formik.errors.text}</Form.Control.Feedback>
+          </InputGroup>
+        </Form>
+      </main>
+    );
 };
 
 export default Chat;
